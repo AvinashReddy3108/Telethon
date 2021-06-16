@@ -45,13 +45,13 @@ class HTMLToTelegramParser(HTMLParser):
         attrs = dict(attrs)
         EntityType = None
         args = {}
-        if tag == 'strong' or tag == 'b':
+        if tag in ['strong', 'b']:
             EntityType = MessageEntityBold
-        elif tag == 'em' or tag == 'i':
+        elif tag in ['em', 'i']:
             EntityType = MessageEntityItalic
         elif tag == 'u':
             EntityType = MessageEntityUnderline
-        elif tag == 'del' or tag == 's':
+        elif tag in ['del', 's']:
             EntityType = MessageEntityStrike
         elif tag == 'blockquote':
             EntityType = MessageEntityBlockquote
@@ -81,13 +81,12 @@ class HTMLToTelegramParser(HTMLParser):
             if url.startswith('mailto:'):
                 url = url[len('mailto:'):]
                 EntityType = MessageEntityEmail
+            elif self.get_starttag_text() == url:
+                EntityType = MessageEntityUrl
             else:
-                if self.get_starttag_text() == url:
-                    EntityType = MessageEntityUrl
-                else:
-                    EntityType = MessageEntityTextUrl
-                    args['url'] = url
-                    url = None
+                EntityType = MessageEntityTextUrl
+                args['url'] = url
+                url = None
             self._open_tags_meta.popleft()
             self._open_tags_meta.appendleft(url)
 

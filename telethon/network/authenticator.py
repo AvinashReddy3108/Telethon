@@ -65,12 +65,8 @@ async def do_authentication(sender):
                 break
 
     if cipher_text is None:
-        raise SecurityError(
-            'Step 2 could not find a valid key for fingerprints: {}'
-            .format(', '.join(
-                [str(f) for f in res_pq.server_public_key_fingerprints])
-            )
-        )
+        raise SecurityError('Step 2 could not find a valid key for fingerprints: {}'
+            .format(', '.join(str(f) for f in res_pq.server_public_key_fingerprints)))
 
     server_dh_params = await sender.send(ReqDHParamsRequest(
         nonce=res_pq.nonce,
